@@ -27,7 +27,6 @@ public class BuzonRevision {
             }
             
         }
-
         // Se agrega el producto al array si el buzon no esta lleno notificando al resto de threads 
 
 
@@ -35,10 +34,26 @@ public class BuzonRevision {
             System.out.println("Producto agregado en posición " + indice);
             indice++;
             notify();
-            
-        
-        
+    }
 
+
+
+
+    public synchronized Producto extraerbuzon(){
+        // condiciones de uso, si el array se encuentra vacio tiene que esperar para poder obtener un producto
+
+        while(indice==0){
+            try{
+                System.out.println("Esperando productos...");
+                wait();
+            }catch(InterruptedException e){
+                System.out.println("Error");
+            }
+        }
+
+        Producto producto= buzon[--indice];
+        notify();
+        return producto;
 
     }
 

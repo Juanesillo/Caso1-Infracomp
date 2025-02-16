@@ -1,60 +1,55 @@
-public class Productor extends Thread{
+public class Productor extends Thread {
 
+    private final BuzonReproceso buzonReproceso;
+    private final BuzonRevision buzonRevision;
+    private boolean ejecutando = true;
+    private int idProductos = 0;
 
-
-    private BuzonReproceso buzonReproceso;
-    private BuzonRevision buzonRevision;
-    private boolean ejecutando=true;
-    private int idProductos=0;
-
-    public Productor( BuzonReproceso buzonReproceso, BuzonRevision buzonRevision){
-
-        this.buzonReproceso=buzonReproceso;
-        this.buzonRevision=buzonRevision;
+    public Productor(BuzonReproceso buzonReproceso, BuzonRevision buzonRevision) {
+        this.buzonReproceso = buzonReproceso;
+        this.buzonRevision = buzonRevision;
     }
 
-
-    public void run(){
-
-        // si buzon reproceso esta lleno hay que darle prelación 
-
+    public void run() {
         while (ejecutando) {
+            try {
+                Producto productoReprocesado;
 
-            //validar que podemos o no obtener un producto para reprocesar
+                synchronized (buzonReproceso) {
+                    productoReprocesado = buzonReproceso.extraer();
+                }
 
-            try{
-                synchronized(buzonReproceso){
-                    Producto producto= buzonReproceso.extraer();
-                    if (producto!=null){
-
-                        if (producto.toString().contains("FIN")) {
-                            System.out.println("🔴 Productor recibe mensaje FIN y finaliza.");
-                            ejecutando = false;
-                            return;
-                        }
-                        Thread.sleep(20000);
-                        synchronized(buzonRevision){
-                        buzonRevision.agregarbuzon(producto);
-                        }
-                    continue;                        
+                if (productoReprocesado != null) {
+                    if (productoReprocesado.toString().contains("FIN")) {
+                        System.out.println("Mensaje Fin recibido");
+                        ejecutando = false;
+                        return;
                     }
 
-                }
-                // En caso de no tener productos en reproceso Generar productos
-                synchronized(buzonRevision){
-                    Producto producto= new Producto(idProductos++, "NuevoP");
-                    Thread.sleep(3000);
-                    buzonRevision.agregarbuzon(producto);
-                }
-   
-            }catch(InterruptedException e){}
-            System.out.println("ERROR");
+                    System.out.println("Volviendo a procesar producto: " + productoReprocesado);
+                    Thread.sleep(5000); 
 
-        
-            
+                    synchronized (buzonRevision) {
+                        buzonRevision.agregarbuzon(productoReprocesado);
+                    }
+                    continue; 
+                }
+
+     
+                Producto nuevoProducto = new Producto(idProductos++, "NuevoP");
+                System.out.println("🛠 Generando: " + nuevoProducto);
+                Thread.sleep(3000); 
+
+                synchronized (buzonRevision) {
+                    buzonRevision.agregarbuzon(nuevoProducto);
+                }
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Productor interrumpido.");
+            } catch (Exception e) {
+                System.out.println("Error en el Productor: " + e.getMessage());
+            }
         }
-
-        
     }
-
 }

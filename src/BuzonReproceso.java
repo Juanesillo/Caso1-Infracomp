@@ -23,7 +23,7 @@ public class BuzonReproceso {
 
         reproceso[indice]=producto;
         indice++;
-        notify();
+        notifyAll();
     }
 
 

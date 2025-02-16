@@ -43,7 +43,7 @@ public class Ensamblaje {
             }
 
 
-            System.out.println("✅ Todos los productos han sido evaluados. Enviando mensaje FIN...");
+            System.out.println("Se recibe mensaje FIN todos los productos fueron procesados");
             buzonReproceso.agregar(new Producto(-1, "FIN"));
 
             for (Productor productor : productores) {
@@ -51,7 +51,7 @@ public class Ensamblaje {
             }
 
         } catch (InterruptedException e) {
-            System.out.println("🚨 Interrupción en la ejecución.");
+                System.out.println(" Error");
             Thread.currentThread().interrupt();
         }
 

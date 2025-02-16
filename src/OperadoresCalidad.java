@@ -21,7 +21,7 @@ public class OperadoresCalidad extends Thread{
         while (productosAprobados < maxProductos || !buzonRevision.estaVacio()) {
             try {
                 Producto producto = buzonRevision.extraerbuzon();
-                if (producto == null) continue;
+              
 
                 Thread.sleep(1000);
                 int resultado = (int) (Math.random() * 100 + 1);

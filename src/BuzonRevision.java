@@ -33,29 +33,29 @@ public class BuzonRevision {
             buzon[indice] = producto;
             System.out.println("Producto agregado en posición " + indice);
             indice++;
-            notify();
+            notifyAll();
     }
 
 
 
 
-    public synchronized Producto extraerbuzon(){
-        // condiciones de uso, si el array se encuentra vacio tiene que esperar para poder obtener un producto
-
-        while(indice==0){
-            try{
-                System.out.println("Esperando productos...");
+    public synchronized Producto extraerbuzon() {
+        while (indice == 0) { // 🛑 Esperar correctamente si el buzón está vacío
+            try {
+                System.out.println("⏳ Esperando productos en el buzón...");
                 wait();
-            }catch(InterruptedException e){
-                System.out.println("Error");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("🚨 Error en extraerbuzon()");
             }
         }
 
-        Producto producto= buzon[--indice];
-        notify();
+        Producto producto = buzon[--indice]; // 🔹 Reducir el índice solo cuando haya producto disponible
+        System.out.println("📤 Producto extraído: " + producto);
+        notifyAll(); // 🔹 Despertar a los productores si había espacio ocupado
         return producto;
-
     }
+
 
     public synchronized boolean estaVacio() {
         return indice == 0;

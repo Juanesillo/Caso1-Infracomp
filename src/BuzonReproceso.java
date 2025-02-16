@@ -11,7 +11,7 @@ public class BuzonReproceso {
 
     public synchronized void agregar(Producto producto){
 
-        while (indice>=reproceso.length) {
+        if (indice>=reproceso.length) {
 
             try{
                 wait();
@@ -31,17 +31,10 @@ public class BuzonReproceso {
 
     public synchronized Producto extraer(){
 
-        while (indice==0) {
-            try{
-                wait();
-            }catch(InterruptedException e){
-                System.out.println("Error");
-            }
-            
-        }
+        if(indice==0){return null;}
 
-        Producto producto= reproceso[--indice];
-        notify();
+        Producto producto =reproceso[--indice];
+        notifyAll();
         return producto;
     }
 

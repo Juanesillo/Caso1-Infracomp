@@ -57,6 +57,10 @@ public class BuzonRevision {
 
     }
 
+    public synchronized boolean estaVacio() {
+        return indice == 0;
+    }
+
 
 
 }

@@ -1,12 +1,12 @@
 public class Producto {
 
     private int id;
-    private boolean fin;
+    private String nombre;
 
 
-    public Producto(int Id, boolean Fin){
+    public Producto(int Id, String nombre){
         this.id=Id;
-        this.fin=Fin;
+        this.nombre=nombre;
 
       }
 
@@ -15,13 +15,9 @@ public class Producto {
         return id;
     }
 
-    public boolean isFin() {
-        return fin;
-    }
-
-
-    public void setFin(boolean fin) {
-        this.fin = fin;
+    @Override
+    public String toString() {
+        return "[" + id + " - " + nombre + "]";
     }
 
 
